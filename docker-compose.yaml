@@ -15,11 +15,12 @@ services:
 
   backend:
     build:
-      context: ./OrganicFarm-Springboot
+      context: ./OrganicFarm-Springboot/OrganicFarm-SpringBoot
       dockerfile: Dockerfile
     image: pailavyshnavi2/docker-backend-2400030741:latest
     container_name: docker-springboot
     ports:
+
       - "2025:8001"
     environment:
       DB_URL: jdbc:postgresql://postgresdb:5432/organicfarmdb
