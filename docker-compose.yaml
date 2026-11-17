@@ -1,40 +1,45 @@
+name: microservices-deployment
+
 services:
   postgresdb:
     image: postgres:16-alpine
-    container_name: postgres-db
+    container_name: postgresdb
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: organicfarmdb
+      POSTGRES_DB: soa-endsem-exam-2400030741
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d soa-endsem-exam-2400030741"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     networks:
-      - springboot-postgres-net
+      - microservices-network
 
-  backend:
+  exam-service:
+    image: pailavyshnavi2/docker-endsem-exam-2400030741:latest
     build:
-      context: ./OrganicFarm-Springboot/OrganicFarm-SpringBoot
+      context: ./OrganicFarm-Springboot
       dockerfile: Dockerfile
-    image: pailavyshnavi2/docker-backend-2400030741:latest
-    container_name: docker-springboot
+    container_name: exam-service
     ports:
-      - "2025:8001"
-    environment:
-      DB_URL: jdbc:postgresql://postgresdb:5432/organicfarmdb
-      DB_USERNAME: postgres
-      DB_PASSWORD: docker
+      - "741:2026"
     depends_on:
-      - postgresdb
-    restart: on-failure
+      postgresdb:
+        condition: service_healthy
+    restart: unless-stopped
     networks:
-      - springboot-postgres-net
-
-  
+      - microservices-network
 
 volumes:
   postgres_data:
 
 networks:
-  springboot-postgres-net:
+  microservices-network:
+    driver: bridge
