@@ -15,7 +15,7 @@ services:
 
   backend:
     build:
-      context: ./OrganicFarm-Springboot/OrganicFarm-SpringBoot
+      context: ./OrganicFarm-Springboot
       dockerfile: Dockerfile
     image: pailavyshnavi2/docker-backend-2400030741:latest
     container_name: docker-springboot
